@@ -39,6 +39,20 @@ func TestApply_FieldFilter(t *testing.T) {
 	}
 }
 
+func TestApply_FieldFilter_NoMatch(t *testing.T) {
+	entries := []parser.Entry{
+		makeEntry(map[string]any{"level": "info", "msg": "ok"}),
+		makeEntry(map[string]any{"level": "warn", "msg": "warning"}),
+	}
+	got, err := Apply(entries, Options{FieldKey: "level", FieldVal: "error"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(got) != 0 {
+		t.Errorf("expected 0 entries, got %d", len(got))
+	}
+}
+
 func TestApply_TimeRange(t *testing.T) {
 	from := time.Date(2024, 1, 1, 10, 0, 0, 0, time.UTC)
 	to := time.Date(2024, 1, 1, 12, 0, 0, 0, time.UTC)
