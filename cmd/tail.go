@@ -28,6 +28,10 @@ func init() {
 }
 
 func runTail(cmd *cobra.Command, args []string) error {
+	if tailLines <= 0 {
+		return fmt.Errorf("lines must be a positive integer, got %d", tailLines)
+	}
+
 	path := args[0]
 	rawLines, err := tail.Lines(path, tailLines)
 	if err != nil {
