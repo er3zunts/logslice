@@ -17,6 +17,10 @@ type Options struct {
 }
 
 // Apply filters a slice of log entries according to the given Options.
+// Entries are included only if they match all specified criteria.
+// Time filtering uses the field named by TimeField (default: "time").
+// Entries missing the time field or with unparseable timestamps are excluded
+// when time filtering is active.
 func Apply(entries []parser.Entry, opts Options) ([]parser.Entry, error) {
 	timeField := opts.TimeField
 	if timeField == "" {
@@ -54,6 +58,7 @@ func Apply(entries []parser.Entry, opts Options) ([]parser.Entry, error) {
 	return result, nil
 }
 
+// parseTime attempts to parse s using several common timestamp formats.
 func parseTime(s string) (time.Time, error) {
 	formats := []string{
 		time.RFC3339,
