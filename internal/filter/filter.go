@@ -58,6 +58,17 @@ func Apply(entries []parser.Entry, opts Options) ([]parser.Entry, error) {
 	return result, nil
 }
 
+// Count returns the number of entries that would be returned by Apply.
+// It is a convenience wrapper to avoid allocating a result slice when only
+// the count is needed.
+func Count(entries []parser.Entry, opts Options) (int, error) {
+	filtered, err := Apply(entries, opts)
+	if err != nil {
+		return 0, err
+	}
+	return len(filtered), nil
+}
+
 // parseTime attempts to parse s using several common timestamp formats.
 func parseTime(s string) (time.Time, error) {
 	formats := []string{
