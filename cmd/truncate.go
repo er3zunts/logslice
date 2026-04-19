@@ -32,6 +32,10 @@ func init() {
 }
 
 func runTruncate(cmd *cobra.Command, args []string) error {
+	if truncMaxLen <= 0 {
+		return fmt.Errorf("--max-len must be a positive integer, got %d", truncMaxLen)
+	}
+
 	f, err := os.Open(args[0])
 	if err != nil {
 		return fmt.Errorf("open file: %w", err)
