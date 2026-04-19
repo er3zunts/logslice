@@ -54,3 +54,24 @@ func TestWriter_Pretty(t *testing.T) {
 		t.Errorf("expected pretty output to contain 'warn'")
 	}
 }
+
+func TestWriter_WriteMultiple(t *testing.T) {
+	var buf bytes.Buffer
+	w := output.New(&buf, output.FormatText)
+	entries := []parser.Entry{
+		makeEntry(`line one`, map[string]interface{}{}),
+		makeEntry(`line two`, map[string]interface{}{}),
+		makeEntry(`line three`, map[string]interface{}{}),
+	}
+	for _, e := range entries {
+		if err := w.Write(e); err != nil {
+			t.Fatalf("unexpected error writing entry: %v", err)
+		}
+	}
+	output := buf.String()
+	for _, e := range entries {
+		if !strings.Contains(output, e.Raw) {
+			t.Errorf("expected output to contain %q", e.Raw)
+		}
+	}
+}
