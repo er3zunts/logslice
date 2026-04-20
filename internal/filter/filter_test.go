@@ -81,3 +81,13 @@ func TestApply_SkipsEntriesWithoutTimeField(t *testing.T) {
 		t.Errorf("expected 0 entries, got %d", len(got))
 	}
 }
+
+func TestApply_EmptyEntries(t *testing.T) {
+	got, err := Apply([]parser.Entry{}, Options{FieldKey: "level", FieldVal: "error"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(got) != 0 {
+		t.Errorf("expected 0 entries for empty input, got %d", len(got))
+	}
+}
