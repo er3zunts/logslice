@@ -32,3 +32,23 @@ func Apply(entries []parser.Entry, rules []Rule) []parser.Entry {
 	}
 	return out
 }
+
+// ApplyOne renames fields in a single entry according to the provided rules.
+// If a source field does not exist the entry is left unchanged.
+// If the destination field already exists it will be overwritten.
+func ApplyOne(e parser.Entry, rules []Rule) parser.Entry {
+	if len(rules) == 0 {
+		return e
+	}
+	fields := make(map[string]interface{}, len(e.Fields))
+	for k, v := range e.Fields {
+		fields[k] = v
+	}
+	for _, r := range rules {
+		if val, ok := fields[r.From]; ok {
+			delete(fields, r.From)
+			fields[r.To] = val
+		}
+	}
+	return parser.Entry{Fields: fields}
+}
