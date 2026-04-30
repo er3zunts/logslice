@@ -41,6 +41,10 @@ func runMask(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("parse: %w", err)
 	}
 
+	if len(entries) == 0 {
+		return fmt.Errorf("no log entries found in %q", args[0])
+	}
+
 	rules, err := mask.ParseRules(maskFields)
 	if err != nil {
 		return fmt.Errorf("parse mask rules: %w", err)
@@ -54,7 +58,7 @@ func runMask(cmd *cobra.Command, args []string) error {
 	}
 	for _, e := range result {
 		if err := w.Write(e); err != nil {
-			return err
+			return fmt.Errorf("write entry: %w", err)
 		}
 	}
 	return w.Flush()
